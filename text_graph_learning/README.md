@@ -139,6 +139,28 @@ Full results: [report/results.md](report/results.md)
 
 ---
 
+## 9. Next Steps & Research Directions
+
+This project establishes supervised graph representation learning foundations. The following directions are planned for future exploration:
+
+### Text-Graph Fusion (Phase 5)
+- Integrate a pretrained BERT encoder to produce semantic node embeddings from raw text attributes (e.g., paper titles/abstracts in Cora)
+- Compare fusion strategies: early concatenation, late fusion, cross-attention
+- Evaluate whether textual semantics improve performance on graphs with rich text attributes
+
+### Graph Self-Supervised Learning
+- Extend the current supervised pipeline toward **self-supervised pre-training** on graphs, building on methods such as GraphCL (You et al., NeurIPS 2020) and Deep Graph Infomax (DGI, Veličković et al., ICLR 2019)
+- Explore graph augmentations (node dropping, edge perturbation, attribute masking) and contrastive objectives to learn representations without labels
+- Investigate transferability of pretrained graph encoders to downstream node/graph-level tasks
+
+### Inductive Generalization
+- Evaluate model performance on unseen nodes and unseen graphs (inductive setting), where GraphSAGE's design should outperform transductive GCN
+
+### Broader Impact
+- Explore applications of graph representation learning to **biological networks** (e.g., protein-protein interaction networks, cell-cell communication graphs), where graph structure encodes meaningful relational priors — connecting graph foundation models to AI for life sciences
+
+---
+
 ## Repository Structure
 
 ```
