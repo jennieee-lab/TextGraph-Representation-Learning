@@ -1,0 +1,50 @@
+# ============================================================
+# Conda Environment
+# Text-enhanced Graph Representation Learning
+# ============================================================
+# Usage:
+#   conda env create -f environment.yml
+#   conda activate text_graph_learning
+# ============================================================
+
+name: text_graph_learning
+
+channels:
+  - pytorch
+  - pyg
+  - conda-forge
+  - defaults
+
+dependencies:
+  - python=3.10
+
+  # Deep Learning
+  - pytorch>=2.1.0
+  - torchvision>=0.16.0
+  - torchaudio>=2.1.0
+  - pyg>=2.4.0
+
+  # Scientific Computing
+  - numpy>=1.24.0
+  - pandas>=2.0.0
+  - scikit-learn>=1.3.0
+  - scipy>=1.11.0
+
+  # Graph Processing
+  - networkx>=3.1
+
+  # Visualization
+  - matplotlib>=3.7.0
+  - tensorboard>=2.15.0
+
+  # Utilities
+  - pyyaml>=6.0
+  - tqdm>=4.66.0
+
+  # Text Encoding (pip)
+  - pip>=23.0
+  - pip:
+    - transformers>=4.36.0
+    - tokenizers>=0.15.0
+    - omegaconf>=2.3.0
+    - wandb>=0.16.0

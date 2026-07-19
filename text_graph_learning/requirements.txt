@@ -1,0 +1,40 @@
+# ============================================================
+# Text-enhanced Graph Representation Learning
+# Python Dependencies
+# ============================================================
+
+# --- Deep Learning ---
+torch>=2.1.0
+torchvision>=0.16.0
+torchaudio>=2.1.0
+torch-geometric>=2.4.0
+
+# --- Text Encoding ---
+transformers>=4.36.0
+tokenizers>=0.15.0
+
+# --- Scientific Computing ---
+numpy>=1.24.0
+pandas>=2.0.0
+scikit-learn>=1.3.0
+scipy>=1.11.0
+
+# --- Graph Processing ---
+networkx>=3.1
+
+# --- Visualization ---
+matplotlib>=3.7.0
+tensorboard>=2.15.0
+
+# --- Configuration ---
+pyyaml>=6.0
+omegaconf>=2.3.0
+
+# --- Utilities ---
+tqdm>=4.66.0
+wandb>=0.16.0
+
+# --- Code Quality (development only) ---
+# black>=23.0.0
+# flake8>=6.0.0
+# isort>=5.12.0

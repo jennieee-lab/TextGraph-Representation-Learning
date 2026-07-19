@@ -1,0 +1,44 @@
+# ============================================================
+# Default Experiment Configuration
+# Text-enhanced Graph Representation Learning
+# ============================================================
+# All hyperparameters are declared here.
+# Code should read from this file — do NOT hard-code values.
+# Override via command line: --config configs/<name>.yaml
+# ============================================================
+
+# --- Dataset Configuration ---
+dataset:
+  name: "placeholder"            # e.g., "cora", "pubmed", "ogbn-arxiv"
+  path: "data/raw"               # Path to raw dataset directory
+  num_classes: null              # Filled automatically after loading (null = auto-detect)
+
+# --- Model Configuration ---
+model:
+  name: "placeholder"            # e.g., "gcn", "graphsage", "gat", "text_graph_fusion"
+  hidden_dimension: 128          # Hidden layer dimension
+  num_layers: 2                  # Number of GNN layers
+  dropout: 0.5                   # Dropout rate
+  # Text encoder settings (for fusion models)
+  text_encoder:
+    name: "bert-base-uncased"   # HuggingFace model identifier
+    freeze: false                # Whether to freeze text encoder weights
+    embedding_dimension: 768     # Output dimension of text encoder
+
+# --- Training Configuration ---
+training:
+  learning_rate: 0.01            # Optimizer learning rate
+  weight_decay: 0.0005           # L2 regularization
+  epochs: 200                     # Number of training epochs
+  batch_size: 32                 # Mini-batch size (for inductive models like GraphSAGE)
+  early_stopping_patience: 20    # Stop if validation metric doesn't improve for N epochs
+  optimizer: "adam"              # "adam" or "sgd"
+
+# --- Experiment Configuration ---
+experiment:
+  seed: 42                       # Random seed for reproducibility
+  device: "auto"                 # "cuda", "cpu", or "auto" (auto-detect GPU)
+  log_dir: "runs"                # TensorBoard log directory
+  checkpoint_dir: "checkpoints"  # Model checkpoint directory
+  save_results: true             # Whether to save experiment results
+  results_dir: "outputs"         # Directory for result files

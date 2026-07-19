@@ -1,0 +1,21 @@
+# ============================================================
+# Root .gitignore — TextGraph-Representation-Learning Repository
+# ============================================================
+# This file applies to the repository root.
+# The text_graph_learning/.gitignore handles project-internal ignores.
+# ============================================================
+
+# --- WorkBuddy project data (NEVER commit) ---
+.workbuddy/
+
+# --- OS ---
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# --- IDE ---
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
