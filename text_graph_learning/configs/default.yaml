@@ -9,17 +9,16 @@
 
 # --- Dataset Configuration ---
 dataset:
-  name: "placeholder"            # e.g., "cora", "pubmed", "ogbn-arxiv"
+  name: "cora"                    # "cora", "citeseer", "pubmed"
   path: "data/raw"               # Path to raw dataset directory
-  num_classes: null              # Filled automatically after loading (null = auto-detect)
 
 # --- Model Configuration ---
 model:
-  name: "placeholder"            # e.g., "gcn", "graphsage", "gat", "text_graph_fusion"
-  hidden_dimension: 128          # Hidden layer dimension
+  name: "all"                    # "mlp", "gcn", "graphsage", or "all"
+  hidden_dimension: 64           # Hidden layer dimension
   num_layers: 2                  # Number of GNN layers
   dropout: 0.5                   # Dropout rate
-  # Text encoder settings (for fusion models)
+  # Text encoder settings (for fusion models — future work)
   text_encoder:
     name: "bert-base-uncased"   # HuggingFace model identifier
     freeze: false                # Whether to freeze text encoder weights
@@ -29,9 +28,9 @@ model:
 training:
   learning_rate: 0.01            # Optimizer learning rate
   weight_decay: 0.0005           # L2 regularization
-  epochs: 200                     # Number of training epochs
-  batch_size: 32                 # Mini-batch size (for inductive models like GraphSAGE)
-  early_stopping_patience: 20    # Stop if validation metric doesn't improve for N epochs
+  epochs: 200                    # Maximum number of training epochs
+  batch_size: 32                 # Mini-batch size (for inductive models)
+  early_stopping_patience: 20    # Stop if validation accuracy doesn't improve for N epochs
   optimizer: "adam"              # "adam" or "sgd"
 
 # --- Experiment Configuration ---

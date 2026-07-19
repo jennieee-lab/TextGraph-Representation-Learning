@@ -1,78 +1,74 @@
 """
-Dataset Module — Data Loading and Dataset Classes
+Dataset Module — Data Loading for Graph Datasets
 ===================================================
 
-Purpose:
-    Load raw graph datasets and convert them into PyTorch Geometric (PyG)
-    Data objects ready for model training.
-
-Responsibilities:
-    - Load datasets from data/raw/ (Cora, PubMed, ogbn-arxiv, etc.)
-    - Construct graph structure (edge_index, node features)
-    - Generate train/validation/test splits
-    - Provide DataLoaders for both transductive and inductive settings
-
-Future Implementation Plan:
-    - load_dataset():  Main entry point — returns PyG Data/DataLoader
-    - CoraDataset:     Citation network with paper text attributes
-    - PubMedDataset:   Larger citation network
-    - OGBNDataset:      Open Graph Benchmark datasets
-
-Usage (future):
-    from src.data.dataset import load_dataset
-    data = load_dataset(config)
+Load graph datasets via PyTorch Geometric (PyG).
+Currently supports citation networks (Cora, Citeseer, PubMed) through Planetoid.
 """
 
-from typing import Any, Dict, Optional
+from typing import Any, Dict
 
-# TODO: Import torch and torch_geometric when implementing
-# import torch
-# from torch_geometric.data import Data, DataLoader
+from torch_geometric.datasets import Planetoid
+import torch_geometric.transforms as T
+
+
+_DATASET_REGISTRY = {
+    "cora": "Cora",
+    "citeseer": "CiteSeer",
+    "pubmed": "PubMed",
+}
 
 
 def load_dataset(config: Dict[str, Any]):
-    """
-    Load a graph dataset based on configuration.
+    """Load a graph dataset based on configuration.
 
     Args:
-        config: Configuration dictionary (from YAML).
-            Expected keys:
-                dataset.name:   Dataset identifier (e.g., "cora")
-                dataset.path:   Path to raw data directory
+        config: Configuration dictionary. Expected keys:
+            dataset.name: Dataset identifier (e.g., "cora")
+            dataset.path: Path to raw data directory
 
     Returns:
-        PyG Data object (or DataLoader for inductive models).
-
-    TODO:
-        - Implement dataset registry (name → loader mapping)
-        - Support train/val/test split generation
-        - Support both transductive and inductive settings
+        PyG Data object with graph structure, features, and labels.
     """
-    raise NotImplementedError("Dataset loading will be implemented in Phase 2.")
+    name = config["dataset"]["name"].lower()
+    path = config["dataset"].get("path", "data/raw")
+
+    if name not in _DATASET_REGISTRY:
+        raise ValueError(
+            f"Unknown dataset '{name}'. Supported: {list(_DATASET_REGISTRY.keys())}"
+        )
+
+    dataset = Planetoid(
+        root=path,
+        name=_DATASET_REGISTRY[name],
+        transform=T.NormalizeFeatures(),
+    )
+
+    data = dataset[0]
+    data.num_classes = dataset.num_classes
+    data.dataset_name = name
+
+    return data
 
 
-class GraphDataset:
+def get_dataset_info(data) -> Dict[str, int]:
+    """Return basic statistics about the loaded graph.
+
+    Args:
+        data: PyG Data object.
+
+    Returns:
+        Dictionary with num_nodes, num_edges, num_features, num_classes.
     """
-    Base class for graph datasets.
+    return {
+        "num_nodes": data.num_nodes,
+        "num_edges": data.num_edges,
+        "num_features": data.num_node_features,
+        "num_classes": data.num_classes,
+        "train_nodes": int(data.train_mask.sum()),
+        "val_nodes": int(data.val_mask.sum()),
+        "test_nodes": int(data.test_mask.sum()),
+    }
 
-    TODO:
-        - Define __init__, __len__, __getitem__
-        - Integrate with PyG Data objects
-        - Support feature and label extraction
-    """
 
-    def __init__(self, name: str, root: str):
-        self.name = name
-        self.root = root
-        # TODO: Load raw data, build graph, extract features
-        raise NotImplementedError
-
-    def get_splits(self, train_ratio=0.6, val_ratio=0.2):
-        """
-        Generate train/validation/test splits.
-
-        TODO:
-            - Support random, stratified, and fixed splits
-            - Return masks for transductive setting
-        """
-        raise NotImplementedError
+__all__ = ["load_dataset", "get_dataset_info"]

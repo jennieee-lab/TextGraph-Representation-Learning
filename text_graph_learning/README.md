@@ -92,27 +92,50 @@ Raw Data → Preprocessing → Graph Construction → Text Feature Extraction
 ## 7. Project Roadmap
 
 ```
-Phase 1 — Project Foundation          [current]
+Phase 1 — Project Foundation          [complete]
   └─ Skeleton, configs, documentation, environment setup
 
-Phase 2 — Data Pipeline
-  └─ Dataset download, graph construction, text preprocessing
+Phase 2 — Data Pipeline               [complete]
+  └─ Cora dataset loading via PyG Planetoid, feature normalization
 
-Phase 3 — Baseline Models
-  └─ MLP, Node2Vec implementation & evaluation
+Phase 3 — Baseline Models             [complete]
+  └─ MLP (non-graph baseline) implemented & evaluated
 
-Phase 4 — GNN Models
-  └─ GCN, GraphSAGE, GAT implementation & evaluation
+Phase 4 — GNN Models                  [complete]
+  └─ GCN, GraphSAGE implemented & evaluated on Cora
 
-Phase 5 — Text-Graph Fusion
+Phase 5 — Text-Graph Fusion           [planned]
   └─ BERT encoder + fusion architecture
 
-Phase 6 — Experiments & Ablation
-  └─ Full benchmark, ablation study, generalization tests
+Phase 6 — Experiments & Ablation      [partial]
+  └─ Baseline comparison done; ablation & generalization pending
 
-Phase 7 — Analysis & Report
-  └─ Visualization, report writing, reproducibility packaging
+Phase 7 — Analysis & Report           [partial]
+  └─ Results documented; full report pending
 ```
+
+---
+
+## 8. Results
+
+### Node Classification on Cora
+
+| Model | Test Accuracy | F1 (Macro) | F1 (Micro) | Parameters |
+|-------|:------------:|:----------:|:----------:|:----------:|
+| MLP (no graph) | 58.40% | 56.58% | 58.40% | 92K |
+| GCN | **81.80%** | **80.68%** | **81.80%** | 92K |
+| GraphSAGE | 78.00% | 77.66% | 78.00% | 184K |
+
+**Key findings:**
+- GCN outperforms MLP by **+23.4%**, confirming that graph topology is critical for node classification.
+- GCN's 81.80% accuracy matches the original Kipf & Welling (ICLR 2017) benchmark, validating the implementation.
+- GraphSAGE converges faster (best at epoch 21) but to lower accuracy than GCN on this transductive task.
+
+**Visualizations:**
+- [Training curves](visualization/training_curves.png) — Loss and validation accuracy over epochs
+- [Model comparison](visualization/model_comparison.png) — Bar chart of test accuracy and F1
+
+Full results: [report/results.md](report/results.md)
 
 ---
 
@@ -148,6 +171,8 @@ text_graph_learning/
 
 ## Getting Started
 
+### Installation
+
 ```bash
 # Create conda environment
 conda env create -f environment.yml
@@ -155,10 +180,22 @@ conda activate text_graph_learning
 
 # Or use pip
 pip install -r requirements.txt
-
-# Run an experiment (future)
-python experiments/run_experiment.py --config configs/default.yaml
 ```
+
+### Run Experiments
+
+```bash
+# Run all three models (MLP, GCN, GraphSAGE) on Cora
+python experiments/run_experiment.py --config configs/default.yaml
+
+# Run a single model
+python experiments/run_experiment.py --model gcn
+
+# Generate visualizations (training curves + model comparison)
+python visualization/plot_results.py
+```
+
+The Cora dataset is automatically downloaded on first run via PyG's Planetoid loader. If the download fails (network issues), place the raw files in `data/raw/Cora/raw/` — see [PyG Planetoid docs](https://pytorch-geometric.readthedocs.io/en/latest/generated/torch_geometric.datasets.Planetoid.html) for details.
 
 ---
 

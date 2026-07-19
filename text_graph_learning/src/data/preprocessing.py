@@ -2,88 +2,88 @@
 Preprocessing Module — Data Preprocessing & Graph Construction
 ===============================================================
 
-Purpose:
-    Transform raw datasets into structured graph representations
-    with both topological and textual features.
+Handles text and graph preprocessing for the text-graph fusion pipeline.
 
-Pipeline:
-    1. Load raw data (text documents, citation links, node metadata)
-    2. Clean and tokenize text attributes
-    3. Construct graph (nodes, edges, adjacency)
-    4. Extract initial node features (TF-IDF, BoW, or placeholder)
-    5. Save processed data to data/processed/
+Current status:
+  - Graph loading and feature normalization are handled by PyG's Planetoid.
+  - Text-specific preprocessing (cleaning, BERT encoding) is prepared for
+    the future text-graph fusion phase (Phase 5).
 
-Future Implementation Plan:
-    - preprocess_data():          Main entry point — orchestrates full pipeline
-    - clean_text():               Text normalization (lowercase, strip, remove noise)
-    - build_graph():              Construct edge_index from citation/edge lists
-    - extract_text_features():    TF-IDF / BoW / BERT feature extraction
-    - create_splits():            Generate train/val/test masks
-
-Usage (future):
-    from src.data.preprocessing import preprocess_data
-    preprocess_data(config)
+Future Implementation Plan (Phase 5):
+  - clean_text():               Text normalization for raw node attributes
+  - extract_text_features():    BERT-based text embedding extraction
+  - TextGraphFusion integration with GNN structural embeddings
 """
 
 from typing import Any, Dict, List
 
-# TODO: Import libraries when implementing
-# import numpy as np
-# import torch
-# from torch_geometric.utils import to_undirected
-
 
 def preprocess_data(config: Dict[str, Any]):
-    """
-    Run the full preprocessing pipeline.
+    """Run the preprocessing pipeline.
+
+    Currently a no-op — PyG's Planetoid handles dataset loading,
+    feature normalization, and graph construction automatically.
+    Text preprocessing will be added in Phase 5 (text-graph fusion).
 
     Args:
         config: Configuration dictionary from YAML.
-
-    Pipeline:
-        raw data → text cleaning → graph construction → feature extraction → save
-
-    TODO:
-        - Orchestrate sub-steps
-        - Save processed data as .pt files in data/processed/
     """
-    raise NotImplementedError("Preprocessing will be implemented in Phase 2.")
+    return {"status": "Preprocessing handled by PyG Planetoid. Text preprocessing deferred to Phase 5."}
 
 
 def clean_text(text: str) -> str:
-    """
-    Clean and normalize raw text.
+    """Clean and normalize raw text for BERT encoding (Phase 5).
 
-    TODO:
-        - Lowercase, strip whitespace
-        - Remove special characters / URLs
-        - Handle missing or empty text
+    Args:
+        text: Raw text string.
+
+    Returns:
+        Cleaned text string.
     """
-    raise NotImplementedError
+    if not text:
+        return ""
+    return text.strip().lower()
 
 
 def build_graph(edge_list: List[tuple], num_nodes: int):
-    """
-    Construct PyG edge_index from a list of (src, dst) tuples.
+    """Construct PyG edge_index from a list of (src, dst) tuples.
 
-    TODO:
-        - Convert to tensor format
-        - Make undirected (for undirected graphs)
-        - Remove self-loops if needed
+    Args:
+        edge_list: List of (source, destination) node index tuples.
+        num_nodes: Total number of nodes.
+
+    Returns:
+        edge_index tensor [2, num_edges] (undirected).
     """
-    raise NotImplementedError
+    import torch
+    from torch_geometric.utils import to_undirected
+
+    edge_index = torch.tensor(edge_list, dtype=torch.long).t().contiguous()
+    edge_index = to_undirected(edge_index, num_nodes=num_nodes)
+    return edge_index
 
 
 def extract_text_features(texts: List[str], method: str = "tfidf"):
-    """
-    Extract initial node features from text attributes.
+    """Extract initial node features from text attributes.
 
     Args:
         texts: List of raw text strings per node.
         method: Feature extraction method ("tfidf", "bow", "bert").
-
-    TODO:
-        - Support TF-IDF for baseline
-        - Support BERT for text-enhanced models
+                BERT will be implemented in Phase 5.
     """
-    raise NotImplementedError
+    if method == "bert":
+        raise NotImplementedError("BERT feature extraction will be implemented in Phase 5 (text-graph fusion).")
+
+    from sklearn.feature_extraction.text import TfidfVectorizer
+
+    if method == "tfidf":
+        vectorizer = TfidfVectorizer(max_features=5000, stop_words="english")
+        return vectorizer.fit_transform(texts).toarray()
+    elif method == "bow":
+        vectorizer = TfidfVectorizer(max_features=5000, stop_words="english", use_idf=False)
+        return vectorizer.fit_transform(texts).toarray()
+    else:
+        raise ValueError(f"Unknown method: {method}")
+
+
+__all__ = ["preprocess_data", "clean_text", "build_graph", "extract_text_features"]

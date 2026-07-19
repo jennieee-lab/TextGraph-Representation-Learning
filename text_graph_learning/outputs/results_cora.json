@@ -1,0 +1,35 @@
+[
+  {
+    "model": "MLP",
+    "dataset": "cora",
+    "num_params": 92231,
+    "best_epoch": 52,
+    "best_val_acc": 0.594,
+    "test_accuracy": 0.584,
+    "test_f1_macro": 0.5657705590514451,
+    "test_f1_micro": 0.584,
+    "train_time_seconds": 2.38
+  },
+  {
+    "model": "GCN",
+    "dataset": "cora",
+    "num_params": 92231,
+    "best_epoch": 46,
+    "best_val_acc": 0.806,
+    "test_accuracy": 0.818,
+    "test_f1_macro": 0.8068487545394099,
+    "test_f1_micro": 0.818,
+    "train_time_seconds": 3.13
+  },
+  {
+    "model": "GraphSAGE",
+    "dataset": "cora",
+    "num_params": 184391,
+    "best_epoch": 21,
+    "best_val_acc": 0.778,
+    "test_accuracy": 0.78,
+    "test_f1_macro": 0.7766219980433186,
+    "test_f1_micro": 0.78,
+    "train_time_seconds": 5.88
+  }
+]

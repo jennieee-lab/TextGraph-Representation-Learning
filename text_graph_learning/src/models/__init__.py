@@ -2,32 +2,53 @@
 Models Module — Text-enhanced Graph Representation Learning
 ===========================================================
 
-This module contains all model definitions:
+Model registry and factory:
   - Baselines: MLP, Node2Vec
   - Graph Neural Networks: GCN, GraphSAGE, GAT
-  - Text Encoder: BERT-based encoder
-  - Fusion: TextGraphFusion (combines text + graph embeddings)
-
-Usage (future):
-    from src.models import build_model
-    model = build_model(config)
+  - Text Encoder: BERT-based encoder (future)
+  - Fusion: TextGraphFusion (future)
 """
 
 from typing import Any, Dict
 
+from src.models.mlp import MLP
+from src.models.gcn import GCN
+from src.models.graphsage import GraphSAGE
 
-def build_model(config: Dict[str, Any]):
-    """
-    Model factory — construct model from configuration.
+
+_MODEL_REGISTRY = {
+    "mlp": MLP,
+    "gcn": GCN,
+    "graphsage": GraphSAGE,
+}
+
+
+def build_model(config: Dict[str, Any], num_features: int, num_classes: int):
+    """Construct a model from configuration.
 
     Args:
-        config: Configuration dictionary. Key model.name determines the model.
+        config: Configuration dict. Key model.name selects the architecture.
+        num_features: Input feature dimension (from dataset).
+        num_classes: Number of target classes (from dataset).
 
-    TODO:
-        - Map model name string to model class
-        - Return initialized model
+    Returns:
+        Initialized model instance.
     """
-    raise NotImplementedError("Model construction will be implemented in Phase 3-5.")
+    name = config["model"]["name"].lower()
+    if name not in _MODEL_REGISTRY:
+        raise ValueError(
+            f"Unknown model '{name}'. Available: {list(_MODEL_REGISTRY.keys())}"
+        )
+
+    model_cls = _MODEL_REGISTRY[name]
+    model = model_cls(
+        num_features=num_features,
+        num_classes=num_classes,
+        hidden_dim=config["model"].get("hidden_dimension", 128),
+        num_layers=config["model"].get("num_layers", 2),
+        dropout=config["model"].get("dropout", 0.5),
+    )
+    return model
 
 
-__all__ = ["build_model"]
+__all__ = ["build_model", "MLP", "GCN", "GraphSAGE"]

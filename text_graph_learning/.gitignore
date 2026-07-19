@@ -16,7 +16,6 @@ checkpoints/
 *.ckpt
 
 # --- Experiment outputs ---
-outputs/
 runs/
 wandb/
 *.log
